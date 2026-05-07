@@ -12,21 +12,28 @@ class Admin(db.Model):
         return {"id": self.id, "email": self.email, "nama": self.nama}
 
 # 2. MODEL PENGGUNA
+# Di dalam file models.py
 class Pengguna(db.Model):
     __tablename__ = 'pengguna'
     id = db.Column(db.Integer, primary_key=True)
     nama = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    umur = db.Column(db.Integer)
-    gender = db.Column(db.String(20))
-    tinggi = db.Column(db.Integer)
-    berat = db.Column(db.Integer)
+    umur = db.Column(db.Integer, default=0)
+    gender = db.Column(db.String(20), default='-')
+    tinggi = db.Column(db.Float, default=0)
+    berat = db.Column(db.Float, default=0)
     poin = db.Column(db.Integer, default=0)
-    
-    # --- TAMBAHKAN BARIS INI AGAR TIDAK ERROR ---
     foto = db.Column(db.String(255)) 
-    # --------------------------------------------
+
+    # --- KOLOM TAMBAHAN UNTUK ASSESSMENT ---
+    pola_makan = db.Column(db.String(100))
+    aktivitas_fisik = db.Column(db.String(100))
+    ngemil = db.Column(db.String(100))
+    konsumsi_gula = db.Column(db.String(100))
+    risk_score = db.Column(db.Integer, default=0)
+    risk_level = db.Column(db.String(50), default='-')
+    health_target = db.Column(db.Text)
 
     # Relasi (Biarkan seperti semula)
     riwayat_makan = db.relationship('RiwayatMakan', backref='pengguna', lazy=True, cascade="all, delete-orphan")
@@ -35,10 +42,18 @@ class Pengguna(db.Model):
 
     def to_dict(self):
         return {
-            "id": self.id, "nama": self.nama, "email": self.email,
-            "umur": self.umur, "gender": self.gender,
-            "tinggi": self.tinggi, "berat": self.berat, "poin": self.poin,
-            "foto": self.foto # Boleh ditambahkan ke sini juga
+            "id": self.id, 
+            "nama": self.nama, 
+            "email": self.email,
+            "umur": self.umur, 
+            "gender": self.gender,
+            "tinggi": self.tinggi, 
+            "berat": self.berat, 
+            "poin": self.poin,
+            "foto": self.foto,
+            "risk_score": self.risk_score,
+            "risk_level": self.risk_level,
+            "health_target": self.health_target
         }
 
 # 3. MODEL RIWAYAT MAKAN (INI YANG HILANG TADI)
@@ -175,3 +190,5 @@ class RiwayatLari(db.Model):
             "tanggal": self.tanggal,
             "rute": self.rute
         }
+    
+
